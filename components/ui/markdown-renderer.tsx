@@ -29,15 +29,13 @@ const HighlightedPre = React.memo(
   async ({ children, ...props }: HighlightedPre) => {
     const { codeToTokens, bundledLanguages } = await import("shiki");
 
-    // Assume default language
-    const language = "tsx";
-
-    if (!(language in bundledLanguages)) {
+    // Remove unused 'language' variable
+    if (!children) {
       return <pre {...props}>{children}</pre>;
     }
 
     const { tokens } = await codeToTokens(children, {
-      lang: language as keyof typeof bundledLanguages,
+      lang: "tsx", // Default language
       defaultColor: false,
       themes: {
         light: "github-light",
@@ -125,7 +123,7 @@ function childrenTakeAllStringContents(element: React.ReactNode): string {
   }
 
   if (React.isValidElement(element) && element.props.children) {
-    let children = element.props.children;
+    const children = element.props.children; // Use `const` instead of `let`
 
     if (Array.isArray(children)) {
       return children
