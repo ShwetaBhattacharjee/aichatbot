@@ -27,9 +27,8 @@ interface HighlightedPre extends React.HTMLAttributes<HTMLPreElement> {
 
 const HighlightedPre = React.memo(
   async ({ children, ...props }: HighlightedPre) => {
-    const { codeToTokens, bundledLanguages } = await import("shiki");
+    const { codeToTokens } = await import("shiki"); // Removed `bundledLanguages`
 
-    // Remove unused 'language' variable
     if (!children) {
       return <pre {...props}>{children}</pre>;
     }
@@ -79,15 +78,9 @@ HighlightedPre.displayName = "HighlightedCode";
 interface CodeBlockProps extends React.HTMLAttributes<HTMLPreElement> {
   children: React.ReactNode;
   className?: string;
-  language?: string;
 }
 
-const CodeBlock = ({
-  children,
-  className,
-  language = "tsx",
-  ...restProps
-}: CodeBlockProps) => {
+const CodeBlock = ({ children, className, ...restProps }: CodeBlockProps) => {
   const code =
     typeof children === "string"
       ? children
@@ -123,7 +116,7 @@ function childrenTakeAllStringContents(element: React.ReactNode): string {
   }
 
   if (React.isValidElement(element) && element.props.children) {
-    const children = element.props.children; // Use `const` instead of `let`
+    const children = element.props.children; // Using `const`
 
     if (Array.isArray(children)) {
       return children
@@ -156,7 +149,7 @@ const COMPONENTS = {
   }) => {
     const match = /language-(\w+)/.exec(className || "");
     return match ? (
-      <CodeBlock className={className} language={match[1]} {...rest}>
+      <CodeBlock className={className} {...rest}>
         {children}
       </CodeBlock>
     ) : (
